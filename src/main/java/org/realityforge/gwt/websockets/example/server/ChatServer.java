@@ -34,7 +34,7 @@ public class ChatServer
   @OnMessage
   public void onMessage( final String message, final Session session )
   {
-    LOG.info( "onClose(" + message + "," + session.getId() + ")" );
+    LOG.info( "onMessage(" + message + "," + session.getId() + ")" );
     final String id = session.getId();
     for ( final Session peer : peers )
     {
