@@ -1,5 +1,5 @@
-gwt-appcache-example
-====================
+gwt-websockets-example
+======================
 
 [![Build Status](https://secure.travis-ci.org/realityforge/gwt-websockets-example.png?branch=master)](http://travis-ci.org/realityforge/gwt-websockets-example)
 
