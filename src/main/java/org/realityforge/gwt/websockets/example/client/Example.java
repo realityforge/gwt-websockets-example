@@ -11,6 +11,7 @@ import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -55,6 +56,8 @@ public final class Example
       final TextBox input = new TextBox();
       input.setValue( "Greetings!" );
 
+      final CheckBox checkBox = new CheckBox( "Binary?" );
+
       _connect = new Button( "Connect", new ClickHandler()
       {
         @Override
@@ -79,7 +82,7 @@ public final class Example
         @Override
         public void onClick( ClickEvent event )
         {
-          webSocket.send( input.getValue() );
+          send( webSocket, input.getValue(), Boolean.TRUE == checkBox.getValue() );
         }
       } );
       _send.setEnabled( false );
@@ -93,6 +96,7 @@ public final class Example
       {
         final FlowPanel controls = new FlowPanel();
         controls.add( url );
+        controls.add( checkBox );
         controls.add( _connect );
         controls.add( _disconnect );
         RootPanel.get().add( controls );
@@ -104,6 +108,20 @@ public final class Example
         controls.add( _send );
         RootPanel.get().add( controls );
       }
+    }
+  }
+
+  private void send( final WebSocket webSocket, final String message, final boolean binary )
+  {
+    if ( binary )
+    {
+      final Int8Array arrayBuffer = TypedArrays.createInt8Array( message.length() );
+      arrayBuffer.set( message.getBytes() );
+      webSocket.send( arrayBuffer );
+    }
+    else
+    {
+      webSocket.send( message );
     }
   }
 
