@@ -108,9 +108,7 @@ public final class Example
       @Override
       public void onOpenEvent( @Nonnull final OpenEvent event )
       {
-        appendText( "open", "silver" );
-        _disconnect.setEnabled( true );
-        _send.setEnabled( true );
+        onOpen( webSocket );
       }
     } );
     webSocket.addCloseHandler( new CloseEvent.Handler()
@@ -118,10 +116,7 @@ public final class Example
       @Override
       public void onCloseEvent( @Nonnull final CloseEvent event )
       {
-        appendText( "close", "silver" );
-        _connect.setEnabled( true );
-        _disconnect.setEnabled( false );
-        _send.setEnabled( false );
+        onClose( webSocket );
       }
     } );
     webSocket.addErrorHandler( new ErrorEvent.Handler()
@@ -129,10 +124,7 @@ public final class Example
       @Override
       public void onErrorEvent( @Nonnull final ErrorEvent event )
       {
-        appendText( "error", "red" );
-        _connect.setEnabled( false );
-        _disconnect.setEnabled( false );
-        _send.setEnabled( false );
+        onError( webSocket );
       }
     } );
     webSocket.addMessageHandler( new MessageEvent.Handler()
@@ -140,9 +132,37 @@ public final class Example
       @Override
       public void onMessageEvent( @Nonnull final MessageEvent event )
       {
-        appendText( "message: " + event.getData(), "black" );
+        onMessage( event, webSocket );
       }
     } );
+  }
+
+  private void onMessage( final MessageEvent event, final WebSocket webSocket )
+  {
+      appendText( "message: " + event.getTextData(), "black" );
+  }
+
+  private void onError( final WebSocket webSocket )
+  {
+    appendText( "error", "red" );
+    _connect.setEnabled( false );
+    _disconnect.setEnabled( false );
+    _send.setEnabled( false );
+  }
+
+  private void onClose( final WebSocket webSocket )
+  {
+    appendText( "close", "silver" );
+    _connect.setEnabled( true );
+    _disconnect.setEnabled( false );
+    _send.setEnabled( false );
+  }
+
+  private void onOpen( final WebSocket webSocket )
+  {
+    appendText( "open", "silver" );
+    _disconnect.setEnabled( true );
+    _send.setEnabled( true );
   }
 
   private void appendText( final String text, final String color )
