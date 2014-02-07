@@ -2,6 +2,7 @@
 <module rename-to='example'>
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="org.realityforge.gwt.websockets.WebSockets"/>
+
   <add-linker name="xsiframe"/>
 
   <entry-point class='org.realityforge.gwt.websockets.example.client.Example'/>
