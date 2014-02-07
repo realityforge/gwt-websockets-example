@@ -6,6 +6,9 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
+import com.google.gwt.typedarrays.shared.Int8Array;
+import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -143,7 +146,21 @@ public final class Example
   private void onMessage( final MessageEvent event, final WebSocket webSocket )
   {
     logStatus( "Message", webSocket );
+    if ( MessageEvent.DataType.TEXT == event.getDataType() )
+    {
       appendText( "message: " + event.getTextData(), "black" );
+    }
+    else
+    {
+      final ArrayBuffer data = event.getArrayBufferData();
+      final Int8Array arrayBuffer = TypedArrays.createInt8Array( data );
+      final StringBuilder sb = new StringBuilder();
+      for ( int i = 0; i < arrayBuffer.length(); i++ )
+      {
+        sb.append( (char) arrayBuffer.get( i ) );
+      }
+      appendText( "binary message: " + sb, "black" );
+    }
   }
 
   private void onError( final WebSocket webSocket )
