@@ -10,7 +10,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint( "/chat" )
+@ServerEndpoint("/chat")
 public class ChatServer
 {
   private static final Logger LOG = Logger.getLogger( ChatServer.class.getName() );
