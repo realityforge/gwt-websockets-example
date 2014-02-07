@@ -8,4 +8,21 @@
   <entry-point class='org.realityforge.gwt.websockets.example.client.Example'/>
 
   <source path='client'/>
+
+  <inherits name="com.google.gwt.logging.Logging"/>
+  <!-- To change the default logLevel -->
+  <set-property name="gwt.logging.logLevel" value="ALL"/>
+  <!-- TRUE or FALSE to enable logging at all -->
+  <set-property name="gwt.logging.enabled" value="TRUE"/>
+  <!-- ENABLED OR DISABLED for different Handlers -->
+
+  <set-property name="gwt.logging.enabled" value="TRUE"/>
+  <set-property name="gwt.logging.logLevel" value="INFO"/>
+  <set-property name="gwt.logging.consoleHandler" value="ENABLED"/>
+  <set-property name="gwt.logging.developmentModeHandler" value="ENABLED"/>
+  <set-property name="gwt.logging.firebugHandler" value="ENABLED"/>
+  <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
+  <set-property name="gwt.logging.systemHandler" value="ENABLED"/>
+  <set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED"/>
+  <set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED"/>
 </module>

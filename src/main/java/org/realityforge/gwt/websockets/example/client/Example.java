@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.realityforge.gwt.websockets.client.WebSocket;
 import org.realityforge.gwt.websockets.client.event.CloseEvent;
@@ -23,6 +24,8 @@ import org.realityforge.gwt.websockets.client.event.OpenEvent;
 public final class Example
   implements EntryPoint
 {
+  private static final Logger LOG = Logger.getLogger( Example.class.getName() );
+
   private HTML _messages;
   private ScrollPanel _scrollPanel;
   private Button _disconnect;
@@ -139,11 +142,13 @@ public final class Example
 
   private void onMessage( final MessageEvent event, final WebSocket webSocket )
   {
+    logStatus( "Message", webSocket );
       appendText( "message: " + event.getTextData(), "black" );
   }
 
   private void onError( final WebSocket webSocket )
   {
+    logStatus( "Error", webSocket );
     appendText( "error", "red" );
     _connect.setEnabled( false );
     _disconnect.setEnabled( false );
@@ -152,6 +157,7 @@ public final class Example
 
   private void onClose( final WebSocket webSocket )
   {
+    logStatus( "Close", webSocket );
     appendText( "close", "silver" );
     _connect.setEnabled( true );
     _disconnect.setEnabled( false );
@@ -160,9 +166,22 @@ public final class Example
 
   private void onOpen( final WebSocket webSocket )
   {
+    logStatus( "Open", webSocket );
     appendText( "open", "silver" );
     _disconnect.setEnabled( true );
     _send.setEnabled( true );
+  }
+
+  private void logStatus( @Nonnull final String section,
+                          @Nonnull final WebSocket webSocket )
+  {
+    LOG.warning( "WebSocket @ " + section + "\n" +
+                 "URL:" + webSocket.getURL() + "\n" +
+                 "BinaryType:" + webSocket.getBinaryType() + "\n" +
+                 "BufferedAmount:" + webSocket.getBufferedAmount() + "\n" +
+                 "Extensions:" + webSocket.getExtensions() + "\n" +
+                 "Protocol:" + webSocket.getProtocol() + "\n" +
+                 "ReadyState:" + webSocket.getReadyState() );
   }
 
   private void appendText( final String text, final String color )
