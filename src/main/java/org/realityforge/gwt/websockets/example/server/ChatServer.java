@@ -1,5 +1,7 @@
 package org.realityforge.gwt.websockets.example.server;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,6 +47,25 @@ public class ChatServer
       else
       {
         peer.getAsyncRemote().sendText( id + " says " + message );
+      }
+    }
+  }
+
+  @OnMessage
+  public void onBinaryMessage( final byte[] data, final Session session )
+  {
+    final String message = new String( data, Charset.forName( "US-ASCII" ) );
+    LOG.info( "onBinaryMessage(" + message + "," + session.getId() + ")" );
+    final String id = session.getId();
+    for ( final Session peer : peers )
+    {
+      if ( peer.getId().equals( session.getId() ) )
+      {
+        peer.getAsyncRemote().sendBinary( ByteBuffer.wrap( ( "You said " + message ).getBytes() ) );
+      }
+      else
+      {
+        peer.getAsyncRemote().sendBinary( ByteBuffer.wrap( ( id + " says " + message ).getBytes() ) );
       }
     }
   }
