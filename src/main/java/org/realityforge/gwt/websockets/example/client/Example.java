@@ -19,14 +19,12 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.realityforge.gwt.websockets.client.WebSocket;
-import org.realityforge.gwt.websockets.client.event.CloseEvent;
-import org.realityforge.gwt.websockets.client.event.ErrorEvent;
-import org.realityforge.gwt.websockets.client.event.MessageEvent;
-import org.realityforge.gwt.websockets.client.event.OpenEvent;
+import org.realityforge.gwt.websockets.client.WebSocketListener;
 
 public final class Example
-  implements EntryPoint
+  implements EntryPoint, WebSocketListener
 {
   private static final Logger LOG = Logger.getLogger( Example.class.getName() );
 
@@ -45,14 +43,7 @@ public final class Example
     }
     else
     {
-      registerListeners( webSocket );
-      final TextBox url = new TextBox();
-      final String moduleBaseURL = GWT.getModuleBaseURL();
-      final String moduleName = GWT.getModuleName();
-      final String webSocketURL =
-        moduleBaseURL.substring( 0, moduleBaseURL.length() - moduleName.length() - 1 ).
-          replaceFirst( "^http\\:", "ws:" ) + "chat";
-      url.setValue( webSocketURL );
+      webSocket.setListener( this );
       final TextBox input = new TextBox();
       input.setValue( "Greetings!" );
 
@@ -64,7 +55,7 @@ public final class Example
         public void onClick( final ClickEvent event )
         {
           _connect.setEnabled( false );
-          webSocket.connect( url.getValue() );
+          webSocket.connect( getWebSocketURL() );
         }
       } );
       _disconnect = new Button( "Disconnect", new ClickHandler()
@@ -95,8 +86,6 @@ public final class Example
 
       {
         final FlowPanel controls = new FlowPanel();
-        controls.add( url );
-        controls.add( checkBox );
         controls.add( _connect );
         controls.add( _disconnect );
         RootPanel.get().add( controls );
@@ -105,10 +94,19 @@ public final class Example
       {
         final FlowPanel controls = new FlowPanel();
         controls.add( input );
+        controls.add( checkBox );
         controls.add( _send );
         RootPanel.get().add( controls );
       }
     }
+  }
+
+  private String getWebSocketURL()
+  {
+    final String moduleBaseURL = GWT.getModuleBaseURL();
+    final String moduleName = GWT.getModuleName();
+    return moduleBaseURL.substring( 0, moduleBaseURL.length() - moduleName.length() - 1 ).
+      replaceFirst( "^http\\:", "ws:" ) + "chat";
   }
 
   private void send( final WebSocket webSocket, final String message, final boolean binary )
@@ -125,63 +123,25 @@ public final class Example
     }
   }
 
-  private void registerListeners( final WebSocket webSocket )
-  {
-    webSocket.addOpenHandler( new OpenEvent.Handler()
-    {
-      @Override
-      public void onOpenEvent( @Nonnull final OpenEvent event )
-      {
-        onOpen( webSocket );
-      }
-    } );
-    webSocket.addCloseHandler( new CloseEvent.Handler()
-    {
-      @Override
-      public void onCloseEvent( @Nonnull final CloseEvent event )
-      {
-        onClose( webSocket );
-      }
-    } );
-    webSocket.addErrorHandler( new ErrorEvent.Handler()
-    {
-      @Override
-      public void onErrorEvent( @Nonnull final ErrorEvent event )
-      {
-        onError( webSocket );
-      }
-    } );
-    webSocket.addMessageHandler( new MessageEvent.Handler()
-    {
-      @Override
-      public void onMessageEvent( @Nonnull final MessageEvent event )
-      {
-        onMessage( event, webSocket );
-      }
-    } );
-  }
-
-  private void onMessage( final MessageEvent event, final WebSocket webSocket )
+  public void onMessage( @Nonnull final WebSocket webSocket, @Nonnull final ArrayBuffer data )
   {
     logStatus( "Message", webSocket );
-    if ( MessageEvent.DataType.TEXT == event.getDataType() )
+    final Int8Array arrayBuffer = TypedArrays.createInt8Array( data );
+    final StringBuilder sb = new StringBuilder();
+    for ( int i = 0; i < arrayBuffer.length(); i++ )
     {
-      appendText( "message: " + event.getTextData(), "black" );
+      sb.append( (char) arrayBuffer.get( i ) );
     }
-    else
-    {
-      final ArrayBuffer data = event.getArrayBufferData();
-      final Int8Array arrayBuffer = TypedArrays.createInt8Array( data );
-      final StringBuilder sb = new StringBuilder();
-      for ( int i = 0; i < arrayBuffer.length(); i++ )
-      {
-        sb.append( (char) arrayBuffer.get( i ) );
-      }
-      appendText( "binary message: " + sb, "black" );
-    }
+    appendText( "binary message: " + sb, "black" );
   }
 
-  private void onError( final WebSocket webSocket )
+  public void onMessage( @Nonnull final WebSocket webSocket, @Nonnull final String textData )
+  {
+    logStatus( "Message", webSocket );
+    appendText( "message: " + textData, "black" );
+  }
+
+  public void onError( @Nonnull final WebSocket webSocket )
   {
     logStatus( "Error", webSocket );
     appendText( "error", "red" );
@@ -190,7 +150,11 @@ public final class Example
     _send.setEnabled( false );
   }
 
-  private void onClose( final WebSocket webSocket )
+  @Override
+  public void onClose( @Nonnull final WebSocket webSocket,
+                       final boolean wasClean,
+                       final int code,
+                       @Nullable final String reason )
   {
     logStatus( "Close", webSocket );
     appendText( "close", "silver" );
@@ -199,7 +163,7 @@ public final class Example
     _send.setEnabled( false );
   }
 
-  private void onOpen( final WebSocket webSocket )
+  public void onOpen( @Nonnull final WebSocket webSocket )
   {
     logStatus( "Open", webSocket );
     appendText( "open", "silver" );
@@ -210,13 +174,14 @@ public final class Example
   private void logStatus( @Nonnull final String section,
                           @Nonnull final WebSocket webSocket )
   {
-    LOG.warning( "WebSocket @ " + section + "\n" +
-                 "URL:" + webSocket.getURL() + "\n" +
-                 "BinaryType:" + webSocket.getBinaryType() + "\n" +
-                 "BufferedAmount:" + webSocket.getBufferedAmount() + "\n" +
-                 "Extensions:" + webSocket.getExtensions() + "\n" +
-                 "Protocol:" + webSocket.getProtocol() + "\n" +
-                 "ReadyState:" + webSocket.getReadyState() );
+    final String suffix = !webSocket.isConnected() ?
+                          "" :
+                          "URL:" + webSocket.getURL() + "\n" +
+                          "BinaryType:" + webSocket.getBinaryType() + "\n" +
+                          "BufferedAmount:" + webSocket.getBufferedAmount() + "\n" +
+                          "Extensions:" + webSocket.getExtensions() + "\n" +
+                          "Protocol:" + webSocket.getProtocol();
+    LOG.warning( "WebSocket @ " + section + "\n" + "ReadyState:" + webSocket.getReadyState() + "\n" + suffix );
   }
 
   private void appendText( final String text, final String color )
