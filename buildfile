@@ -1,4 +1,5 @@
 require 'buildr/git_auto_version'
+require 'buildr/gwt'
 
 desc "A simple application demonstrating the use of the gwt-websockets library"
 define 'gwt-websockets-example' do
