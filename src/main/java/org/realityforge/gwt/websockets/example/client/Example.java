@@ -55,7 +55,7 @@ public final class Example
         public void onClick( final ClickEvent event )
         {
           _connect.setEnabled( false );
-          webSocket.connect( getWebSocketURL() );
+          webSocket.connect( getWebSocketURL(), "superchat" );
         }
       } );
       _disconnect = new Button( "Disconnect", new ClickHandler()
