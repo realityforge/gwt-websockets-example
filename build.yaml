@@ -12,4 +12,4 @@ artifacts:
   javax_validation: javax.validation:validation-api:jar:1.0.0.GA
   javax_validation_sources: javax.validation:validation-api:jar:sources:1.0.0.GA
 
-  gwt_websockets: org.realityforge.gwt.websockets:gwt-websockets:jar:1.1.1
+  gwt_websockets: org.realityforge.gwt.websockets:gwt-websockets:jar:1.1.2

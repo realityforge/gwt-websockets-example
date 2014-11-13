@@ -33,6 +33,7 @@ public final class Example
   private Button _disconnect;
   private Button _connect;
   private Button _send;
+  private CheckBox _subProtocol;
 
   public void onModuleLoad()
   {
@@ -48,6 +49,7 @@ public final class Example
       input.setValue( "Greetings!" );
 
       final CheckBox checkBox = new CheckBox( "Binary?" );
+      _subProtocol = new CheckBox( "Use sub-protocol?" );
 
       _connect = new Button( "Connect", new ClickHandler()
       {
@@ -55,7 +57,15 @@ public final class Example
         public void onClick( final ClickEvent event )
         {
           _connect.setEnabled( false );
-          webSocket.connect( getWebSocketURL(), "superchat" );
+          _subProtocol.setEnabled( false );
+          if ( Boolean.TRUE == _subProtocol.getValue() )
+          {
+            webSocket.connect( getWebSocketURL(), "superchat" );
+          }
+          else
+          {
+            webSocket.connect( getWebSocketURL() );
+          }
         }
       } );
       _disconnect = new Button( "Disconnect", new ClickHandler()
@@ -88,6 +98,7 @@ public final class Example
         final FlowPanel controls = new FlowPanel();
         controls.add( _connect );
         controls.add( _disconnect );
+        controls.add( _subProtocol );
         RootPanel.get().add( controls );
       }
 
@@ -144,6 +155,7 @@ public final class Example
     logStatus( "Error", webSocket );
     appendText( "error", "red" );
     _connect.setEnabled( false );
+    _subProtocol.setEnabled( false );
     _disconnect.setEnabled( false );
     _send.setEnabled( false );
   }
@@ -157,6 +169,7 @@ public final class Example
     logStatus( "Close", webSocket );
     appendText( "close", "silver" );
     _connect.setEnabled( true );
+    _subProtocol.setEnabled( true );
     _disconnect.setEnabled( false );
     _send.setEnabled( false );
   }
