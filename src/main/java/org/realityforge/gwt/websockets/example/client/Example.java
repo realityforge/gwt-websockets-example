@@ -103,10 +103,8 @@ public final class Example
 
   private String getWebSocketURL()
   {
-    final String moduleBaseURL = GWT.getModuleBaseURL();
-    final String moduleName = GWT.getModuleName();
-    return moduleBaseURL.substring( 0, moduleBaseURL.length() - moduleName.length() - 1 ).
-      replaceFirst( "^http\\:", "ws:" ) + "chat";
+    final String moduleBaseURL = GWT.getHostPageBaseURL();
+    return moduleBaseURL.replaceFirst( "^http\\:", "ws:" ) + "chat";
   }
 
   private void send( final WebSocket webSocket, final String message, final boolean binary )

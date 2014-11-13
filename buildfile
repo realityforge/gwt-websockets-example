@@ -28,13 +28,15 @@ define 'gwt-websockets-example' do
   webroots = {}
   webroots[_(:source, :main, :webapp)] = "/" if File.exist?(_(:source, :main, :webapp))
   assets.paths.each { |path| webroots[path.to_s] = "/" if path.to_s != gwt_dir.to_s }
+  webroots[_(:source, :main, :webapp_local)] = '/'
   iml.add_web_facet(:webroots => webroots)
 
   iml.add_jruby_facet
 
+  ipr.add_gwt_configuration(project, :vm_parameters => '-Xmx3G', :shell_parameters => '-port 8888', :launch_page => 'http://127.0.0.1:8080/gwt-websockets-example')
+
   ipr.add_exploded_war_artifact(project,
                                 :build_on_make => true,
-                                :enable_gwt => true,
                                 :enable_war => true,
                                 :dependencies => [project])
 end
