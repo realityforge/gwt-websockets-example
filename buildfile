@@ -1,6 +1,8 @@
 require 'buildr/git_auto_version'
 require 'buildr/gwt'
 
+GWT_DEPS = [:asm, :gwt_websockets, :gwt_user]
+
 desc "A simple application demonstrating the use of the gwt-websockets library"
 define 'gwt-websockets-example' do
   project.group = 'org.realityforge.gwt.websockets.example'
@@ -9,7 +11,7 @@ define 'gwt-websockets-example' do
   compile.options.target = '1.7'
   compile.options.lint = 'all'
 
-  compile.with :gwt_websockets, :javax_annotation, :javax_javaee, :gwt_user
+  compile.with :javax_annotation, :javax_javaee, GWT_DEPS
 
   gwt_dir = gwt(["org.realityforge.gwt.websockets.example.Example"],
                 :java_args => ["-Xms512M", "-Xmx1024M", "-XX:PermSize=128M", "-XX:MaxPermSize=256M"],
