@@ -39,4 +39,6 @@ define 'gwt-websockets-example' do
                                 :build_on_make => true,
                                 :enable_war => true,
                                 :dependencies => [project])
+
+  ipr.extra_modules << '../gwt-websockets/gwt-websockets.iml'
 end
