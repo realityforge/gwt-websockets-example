@@ -1,7 +1,6 @@
 require 'buildr/git_auto_version'
-require 'buildr/gwt'
 
-GWT_DEPS = [:asm, :gwt_websockets, :gwt_user]
+GWT_DEPS = [:gwt_websockets, :gwt_user]
 
 desc 'A simple application demonstrating the use of the gwt-websockets library'
 define 'gwt-websockets-example' do
@@ -15,8 +14,7 @@ define 'gwt-websockets-example' do
 
   gwt_dir = gwt(['org.realityforge.gwt.websockets.example.Example'],
                 :java_args => ['-Xms512M', '-Xmx1024M', '-XX:PermSize=128M', '-XX:MaxPermSize=256M'],
-                :draft_compile => (ENV['FAST_GWT'] == 'true'),
-                :dependencies => [:javax_validation, :javax_validation_sources] + project.compile.dependencies)
+                :draft_compile => (ENV['FAST_GWT'] == 'true'))
 
   package(:war)
 
