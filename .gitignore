@@ -8,3 +8,5 @@
 /_buildr.rb
 /tmp
 /Gemfile.lock
+/.gradle
+/build

@@ -1,0 +1,86 @@
+apply plugin: 'war'
+apply plugin: 'gwt'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+project.version = '8.0'
+project.sourceCompatibility = 1.6
+project.targetCompatibility = 1.6
+
+ext {
+  contextName = 'gwt-websockets-example'
+}
+
+buildscript {
+  repositories {
+    mavenLocal()  // for 0.X-SNAPSHOT
+    mavenCentral()
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+  }
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+dependencies {
+  compile 'javax:javaee-api:7.0'
+  compile 'com.google.code.findbugs:jsr305:2.0.1'
+  compile 'org.realityforge.gwt.websockets:gwt-websockets:1.1.2'
+  
+  providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
+  
+  testCompile 'junit:junit:4.11'
+}
+
+clean {
+  delete "war"
+  delete "gwt-unitCache"
+  delete "docout.err"
+}
+
+gwtDev {
+  bindAddress = '0.0.0.0'
+}
+
+gwt {
+  gwtVersion = '2.7.0'
+  
+  sourceCompatibility = 1.6
+  targetCompatibility = 1.6
+  // http://stackoverflow.com/a/16679733/1316011
+  def bootClasspathStr = java7runtime+"/jre/lib/rt.jar"
+  tasks.withType(AbstractCompile, { AbstractCompile ac ->
+    ac.options.bootClasspath = bootClasspathStr 
+  })
+
+  modules 'org.realityforge.gwt.websockets.example.Example'
+  devModules 'org.realityforge.gwt.websockets.example.Example'
+  
+  maxHeapSize = '1024m'
+	
+  superDev {
+    noPrecompile = true
+  }
+}
+
+// This is here solely to prevent a spurious Eclipse
+// warning that gwt-servlet.jar is not in WEB-INF/lib.
+// The path is mine. You may need to change it.
+warTemplate.doLast {
+  copy {
+    from "/opt/gwt-2.7.0/gwt-servlet.jar"
+    into "war/WEB-INF/lib"
+  }
+}
+
+war {
+  from 'war'
+  exclude("**/WEB-INF/deploy")
+  archiveName "${contextName}.war"
+}
