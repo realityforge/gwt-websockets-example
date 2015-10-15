@@ -29,11 +29,10 @@ repositories {
 }
 
 dependencies {
-  compile 'javax:javaee-api:7.0'
-  compile 'com.google.code.findbugs:jsr305:2.0.1'
   compile 'org.realityforge.gwt.websockets:gwt-websockets:1.1.2'
   
   providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
+  providedCompile 'javax.websocket:javax.websocket-api:1.1'
   
   testCompile 'junit:junit:4.11'
 }
@@ -69,9 +68,8 @@ gwt {
   }
 }
 
-// This is here solely to prevent a spurious Eclipse
-// warning that gwt-servlet.jar is not in WEB-INF/lib.
-// The path is mine. You may need to change it.
+// This is here solely to prevent a spurious Eclipse warning that
+// gwt-servlet.jar is not in WEB-INF/lib. You may not need this.
 warTemplate.doLast {
   copy {
     from "/opt/gwt-2.7.0/gwt-servlet.jar"
