@@ -11,3 +11,6 @@
 /.gradle
 /build
 /war
+.classpath
+.project
+.settings/
