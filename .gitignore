@@ -8,3 +8,9 @@
 /_buildr.rb
 /tmp
 /Gemfile.lock
+/.gradle
+/build
+/war
+.classpath
+.project
+.settings/
