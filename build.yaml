@@ -6,7 +6,7 @@ artifacts:
   javax_javaee: javax:javaee-api:jar:7.0
   javax_annotation: com.google.code.findbugs:jsr305:jar:2.0.1
 
-  gwt_user: com.google.gwt:gwt-user:jar:2.7.0-rc1
-  gwt_dev: com.google.gwt:gwt-dev:jar:2.7.0-rc1
+  gwt_user: com.google.gwt:gwt-user:jar:2.8.0
+  gwt_dev: com.google.gwt:gwt-dev:jar:2.8.0
 
   gwt_websockets: org.realityforge.gwt.websockets:gwt-websockets:jar:1.1.2
