@@ -7,14 +7,14 @@ desc 'A simple application demonstrating the use of the gwt-websockets library'
 define 'gwt-websockets-example' do
   project.group = 'org.realityforge.gwt.websockets.example'
 
-  compile.options.source = '1.7'
-  compile.options.target = '1.7'
+  compile.options.source = '1.8'
+  compile.options.target = '1.8'
   compile.options.lint = 'all'
 
   compile.with :javax_annotation, :javax_javaee, GWT_DEPS
 
   gwt_dir = gwt(['org.realityforge.gwt.websockets.example.Example'],
-                :java_args => ['-Xms512M', '-Xmx1024M', '-XX:PermSize=128M', '-XX:MaxPermSize=256M'],
+                :java_args => ['-Xms512M', '-Xmx1024M'],
                 :draft_compile => (ENV['FAST_GWT'] == 'true'))
 
   package(:war)
