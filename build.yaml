@@ -9,4 +9,4 @@ artifacts:
   gwt_user: com.google.gwt:gwt-user:jar:2.8.0
   gwt_dev: com.google.gwt:gwt-dev:jar:2.8.0
 
-  gwt_websockets: org.realityforge.gwt.websockets:gwt-websockets:jar:1.1.2
+  gwt_websockets: org.realityforge.gwt.websockets:gwt-websockets:jar:1.2
