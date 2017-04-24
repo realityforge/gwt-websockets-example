@@ -1,4 +1,5 @@
 require 'buildr/git_auto_version'
+require 'buildr/gwt'
 
 GWT_DEPS = [:gwt_websockets, :gwt_user]
 
