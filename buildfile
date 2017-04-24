@@ -14,7 +14,7 @@ define 'gwt-websockets-example' do
   compile.with :javax_annotation, :javax_javaee, GWT_DEPS
 
   gwt_dir = gwt(['org.realityforge.gwt.websockets.example.Example'],
-                :java_args => ['-Xms512M', '-Xmx1024M'],
+                :java_args => %w(-Xms512M -Xmx1024M),
                 :draft_compile => (ENV['FAST_GWT'] == 'true'))
 
   package(:war)
